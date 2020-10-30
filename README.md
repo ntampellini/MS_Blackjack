@@ -20,4 +20,4 @@
 
 ## License
 
-**MS_Blackjack** and **MS_Molecular_Ion_Split** are available under the MIT license. See the [LICENSE](https://github.com/mstrocchi/fid-to-wav/blob/master/LICENSE.md) file for more info.
+**MS_Blackjack** and **MS_Molecular_Ion_Split** are available under the MIT license. See the [LICENSE](https://github.com/ntampellini/MS_Blackjack/blob/main/LICENSE.md) file for more info.
