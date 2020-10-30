@@ -19,22 +19,23 @@ def guide(colors=False):
         b = ''
         e = ''
         y = ''
-    return f'''**************************************************************************************************************
-    {y}{b}Mass Fragments Blackjack{e} by Nicolò Tampellini and Alessandro Brusa.
+    return f'''
+**************************************************************************************************************
+{y}{b}Mass Fragments Blackjack{e} by Nicolò Tampellini and Alessandro Brusa.
 
-    Insert mass, optional atoms present in the fragment and optional keyword for the search algorithm.
-    Example - \'59 CNO2 mol extensive\'
+Insert mass, optional atoms present in the fragment and optional keyword for the search algorithm.
+Example - \'59 CNO2 mol extensive\'
 
-    {b}Keywords: (if multiple, exactly in THIS order){e}
-    {y}exact{e} - request exact mass peak (single isotope, best match reported with associate error)
-    {y}mol{e} - requests only structures with integer saturation index (molecules or OE(.+) ions, not
-        EE(+) ions) and with a C/H ratio compatible with a proper molecule. Be careful, may discard
-        low-hydrogen molecules like HC3N or C4N2, which may be proper for human standards.
-    {y}extensive{e} - broadens search criterias (required for low %C(m/m) molecules like CS2 and Freons)
-    {y}wild{e} - explores all possible chemical space, no assumptions made. (SLOW, USE WITH CARE!)
-    {y}only_*{e} - use only selected atoms to build structure. Example - \'only_CHClBr\'
-    {y}nist{e} - for each found structure, look up on NIST if there is any matching mass spectra
-    **************************************************************************************************************\n'''
+{b}Keywords: (if multiple, exactly in THIS order){e}
+{y}exact{e} - request exact mass peak (single isotope, best match reported with associate error)
+{y}mol{e} - requests only structures with integer saturation index (molecules or OE(.+) ions, not
+    EE(+) ions) and with a C/H ratio compatible with a proper molecule. Be careful, may discard
+    low-hydrogen molecules like HC3N or C4N2, which may be proper for human standards.
+{y}extensive{e} - broadens search criterias (required for low %C(m/m) molecules like CS2 and Freons)
+{y}wild{e} - explores all possible chemical space, no assumptions made. (SLOW, USE WITH CARE!)
+{y}only_*{e} - use only selected atoms to build structure. Example - \'only_CHClBr\'
+{y}nist{e} - for each found structure, look up on NIST if there is any matching mass spectra
+**************************************************************************************************************\n'''
 
 def input_alg(colors=False):
     if colors:
@@ -279,6 +280,7 @@ def blackjack_alg(inp):
         print('------------>', num)
 
     inp = inp.split()
+    print_list.append('')
     try:
         if inp[-1] == 'nist':
             print_list.append('--> NIST keyword - Will look online for matching MS spectras.')
@@ -471,8 +473,7 @@ def blackjack_alg(inp):
                 log = []
                 log.append(best_fit)
 
-        # print_list.append('\033[K', end='\r')
-        # print_list.append('                                                   \n', end='\r')
+        print_list.append('')
         if len(log) != 0:
             log.sort(key=_verbose_weight)
             for l in log:
@@ -486,7 +487,7 @@ def blackjack_alg(inp):
                 if nist:
                     NOS = _nist_structures(l)
                     if NOS[0] != '0':
-                        string = ' ' * (15 - len(''.join(formula))) + NOS[0] + ' structures found on NIST - ' + NOS[1]
+                        string = ' ' * (15 - len(''.join(formula))) + NOS[0] + ' found on NIST - ' + NOS[1]
                         formula += string
                 print_list.append(''.join(formula))   
             t_end = time.time()
