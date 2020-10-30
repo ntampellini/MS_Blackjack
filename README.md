@@ -11,7 +11,9 @@
 
 **MS_Molecular_Ion_Split** is a script to generate a histogram of the pattern of a molecular ion in mass spectrometry, given its formula. Isotopic abundances are used to estimate ratios between different isotopes of ions and the emerging pattern can help to differentiate molecules.
 
-![](resources/example.png)
+| **Terminal interface** | **Molecular ion pattern** |
+:------------:|:-----------:|
+![](resources/example.png) | ![](resources/split_pattern.png)
 
 ## Authors
 
