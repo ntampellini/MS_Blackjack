@@ -13,7 +13,7 @@
 
 | **Terminal interface** | **Molecular ion pattern** |
 :------------:|:-----------:|
-![](resources/example.png)) | ![](resources/split_pattern.png)
+![](resources/example.png) | ![](resources/split_pattern.png)
 
 ## Authors
 
