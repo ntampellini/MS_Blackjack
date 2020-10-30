@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from periodic_table import pt, pt_exact
 import numpy as np
 import requests
 import time
@@ -86,6 +87,8 @@ def blackjack_alg(inp):
 
     global best_fit
     best_fit = []
+
+    global pt
 
     def _weight(a):
         return pt[a]
@@ -357,11 +360,8 @@ def blackjack_alg(inp):
                 atoms_verbose.append(atoms[atom])
     t_start = time.time()
 
-    pt = {'H':1, 'C':12, 'N':14, 'O':16, 'F':19, 'P':31, 'S':32, 'Cl':35, 'Br':79}
-    # connectivity = {'H':1, 'C':4, 'N':3, 'O':2, 'F':1, 'P':3, 'S':2, 'Cl':1, 'Br':1} # lacks hypervalent P/S
     if exact_mass:
-        pt = {'H':1.007825, 'C':12.000000, 'N':14.003074, 'O':15.994915, 'F':18.998403, 'P':30.973763, 'S':31.972072, 'Cl':34.968853, 'Br':78.918336}
-    
+        pt.update(pt_exact)
     if only_option:
         only_guide = re.findall('[A-Z][^A-Z]*', only_guide)
         # print_list.append(only_guide)

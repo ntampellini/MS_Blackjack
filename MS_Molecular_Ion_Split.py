@@ -6,21 +6,16 @@ plot = True              # Generate a plot that shows molecular ion splitting pa
 nanopeaks = False        # Plot and display minuscule peaks below 0.05 % relative abundance
 
 #################################################################################################
-
+from isotopic_abundances import pt
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 import re
 
 t0 = time.time()
-print('\n')
-
-pt = {'H':{1:99.985, 2:0.15}, 'C':{12:98.89, 13:1.11}, 'N':{14:99.634, 15:0.366}, 'O':{16:99.762, 17:0.038, 18:0.2}, 'F':{19:100}, 'Si':{28:92.23, 29:4.67, 
-30:3.1}, 'P':{31:100}, 'S':{31:95.02, 33:0.75, 34:4.21, 36:0.02}, 'Cl':{35:75.77, 37:24.23}, 'Br':{79:50.69, 81:49.31}, 'I':{127:100}}
 
 if not deuterium:
-    pt = {'H':{1:100}, 'C':{12:98.89, 13:1.11}, 'N':{14:99.634, 15:0.366}, 'O':{16:99.762, 17:0.038, 18:0.2}, 'F':{19:100}, 'Si':{28:92.23, 29:4.67, 
-30:3.1}, 'P':{31:100}, 'S':{31:95.02, 33:0.75, 34:4.21, 36:0.02}, 'Cl':{35:75.77, 37:24.23}, 'Br':{79:50.69, 81:49.31}, 'I':{127:100}}
+    pt['H'] = {1:100}
 
 flattened = []                                  #parser for chemical formula interpretation
 def flatten(l):
@@ -64,6 +59,17 @@ for i in range(len(2*parsed)):                    #adding '1' for single atoms l
             except:
                 pass
 
+        for p in range(len(parsed)):
+            if p % 2 == 0:
+                atoms.append(parsed[p])
+        abundance=[]
+        for p in range(len(parsed)):
+            if p % 2 != 0:
+                abundance.append(int(parsed[p]))
+        atoms_verbose = []
+        for atom in range(len(atoms)):
+            for _ in range(abundance[atom]):
+                atoms_verbose.append(atoms[atom])
 
 # print(atoms)
 # print(abundance)
