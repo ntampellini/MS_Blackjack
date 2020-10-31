@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from periodic_table import pt, pt_exact
 import numpy as np
 import requests
+import argparse
 import time
 import sys
 import re
@@ -23,18 +24,18 @@ def guide(colors=False):
 **************************************************************************************************************
 {y}{b}Mass Fragments Blackjack{e} by Nicolò Tampellini and Alessandro Brusa.
 
-Insert mass, optional atoms present in the fragment and optional keyword for the search algorithm.
-Example - \'59 CNO2 mol extensive\'
+Input: m/z [args]     - Ex. \'159 -hint C7NO2 -mol -only CHON -nist\'
 
-{b}Keywords: (if multiple, exactly in THIS order){e}
-{y}exact{e} - request exact mass peak (single isotope, best match reported with associate error)
-{y}mol{e} - requests only structures with integer saturation index (molecules or OE(.+) ions, not
-    EE(+) ions) and with a C/H ratio compatible with a proper molecule. Be careful, may discard
-    low-hydrogen molecules like HC3N or C4N2, which may be proper for human standards.
-{y}extensive{e} - broadens search criterias (required for low %C(m/m) molecules like CS2 and Freons)
-{y}wild{e} - explores all possible chemical space, no assumptions made. (SLOW, USE WITH CARE!)
-{y}only_*{e} - use only selected atoms to build structure. Example - \'only_CHClBr\'
-{y}nist{e} - for each found structure, look up on NIST if there is any matching mass spectra
+{b}Arguments (optional):{e}\n
+{y}-hint (formula){e} - uses provided fragment as starting point for formula search. Ex. - \'-hint C6HF2\'\n
+{y}-exact{e}          - request exact mass peak (single isotope, best match reported with associate error)\n
+{y}-mol{e}            - requests only structures with integer saturation index (molecules or OE(.+) ions, not
+                  EE(+) ions) and with a C/H ratio compatible with a proper molecule. Be careful, may discard
+                  low-hydrogen molecules like HC3N or C4N2, which may be proper for human standards.\n
+{y}-ext{e}            - broadens search criterias (required for low %C(m/m) molecules like CS2 and Freons)\n
+{y}-wild{e}           - explores all possible chemical space, no assumptions made. (SLOW, USE WITH CARE!)\n
+{y}-only (atoms) {e}  - use only selected atoms to build structure. Ex. - \'-only CHClBr\'\n
+{y}-nist{e}           - for each found structure, look up on NIST if there is any matching mass spectra\n
 **************************************************************************************************************\n'''
 
 def input_alg(colors=False):
@@ -281,50 +282,61 @@ def blackjack_alg(inp):
 
     inp = inp.split()
     print_list.append('')
+
+    # if "-d" in inp:
+    #     debug=True
+    #     inp.remove('-d')
+
+    parser = argparse.ArgumentParser(description='descriptionz')
+    parser.add_argument('-hint', action="store", help='hint keyword - uses provided fragment as starting point for formula search.', metavar='fragment', required=False)
+    parser.add_argument('-exact', action="store_true", help='exact mass keyword - request exact mass peak (single isotope, best match reported with associate error)', default=False)
+    parser.add_argument('-mol', action="store_true", help='''molecule keyword - requests only structures with integer saturation index (molecules or OE(.+) ions, not
+    EE(+) ions) and with a C/H ratio compatible with a proper molecule. Be careful, may discard
+    low-hydrogen molecules like HC3N or C4N2, which may be proper for human standards.''', default=False)
+    parser.add_argument('-ext', action="store_true", help='extensive keyword - broadens search criterias (required for low %C(m/m) molecules like CS2 and Freons).', default=False)
+    parser.add_argument('-wild', action="store_true", help='wild keyword - explores all possible chemical space, no assumptions made. (SLOW, USE WITH CARE!).', default=False)
+    parser.add_argument('-only', action="store", help='only keyword - use only selected atoms to build structure. Example - \'-only CHClBr\'.', metavar='atoms', default=False)
+    parser.add_argument('-nist', action="store_true", help='NIST keywprd - for each found structure, look up on NIST if there is any matching mass spectra.', default=False)
+
+    ARGS = parser.parse_args(inp[1:])
+
     try:
-        if inp[-1] == 'nist':
+        if ARGS.hint:
+            guide = ARGS.hint
+            print_list.append(f'--> Using fragment {guide} as starting guess.')
+            guided = True
+
+        if ARGS.nist:
             print_list.append('--> NIST keyword - Will look online for matching MS spectras.')
             nist = True
-            inp = inp[:-1]
 
-        if 'only_' in inp[-1]:
+        if ARGS.only:
             only_option = True
-            only_guide = inp[-1].split('_')[-1]
-            inp = inp[:-1]
+            only_guide = ARGS.only
 
-        if inp[-1] == 'wild':
+        if ARGS.wild:
             print_list.append('--> Running wild! Requested comprehensive sampling of chemical space.')
             wild = True
-            inp = inp[:-1]
 
-        if inp[-1] == 'extensive':
+        if ARGS.ext:
             print_list.append(r'--> Requested extensive sampling of molecules with low %m/m of C.')
             extensive = True
-            inp = inp[:-1]
 
-        if inp[-1] == 'mol':
+        if ARGS.mol:
             print_list.append('--> Requested only molecules with even saturation index and common C/H ratio.')
             even_saturation_index = True
-            inp = inp[:-1]
 
-        if inp[-1] == 'exact':
+        if ARGS.exact:
             print_list.append('--> Requested exact mass peak - only best match provided.')
             exact_mass = True
-            inp = inp[:-1]
 
-        if not exact_mass:
-            inp[0] = int(inp[0])
-        else:
-            inp[0] = float(inp[0])
     except:
-        pass
+        return '--> An error occurred.'
     
-    mass = inp[0]
-    if len(inp) > 1:  # if len(inp) > 1 it must be guided, so inp[-1] is the guide
-        guided = True
-        guide = inp[-1]
+    mass = float(inp[0])
 
-        parsed = re.findall('[A-Z][^A-Z]*', guide)         #parser for chemical formula interpretation
+    if guided:
+        parsed = re.findall('[A-Z][^A-Z]*', ARGS.hint)         #parser for chemical formula interpretation
         parsed = [re.split('(\d+)',i) for i in parsed]
         flattened = []
         parsed = _flatten(parsed)
@@ -419,8 +431,8 @@ def blackjack_alg(inp):
             everything_is_ok = False
 
     if everything_is_ok:
-        if guided:
-            print_list.append(f'--> Using fragment {guide} as starting guess.')
+        # if guided:
+        #     print_list.append(f'--> Using fragment {guide} as starting guess.')
         # print_list.append(f'Computing ions of {mass} amu...', end='\r')
         CH_list = _CH_list_generator(mass)
         hetero_list = []
