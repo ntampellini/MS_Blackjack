@@ -114,13 +114,13 @@ def blackjack_alg(inp):
 
         if wild:
             c_min = 0
-            c_max = mass // 12
+            c_max = int(mass // 12)
         
         h_min = 0
         h_max = 2 * c_max + 2
 
         if wild:
-            h_max = mass // 1
+            h_max = int(mass // 1)
 
         if guided and atoms_verbose.count('H') > h_min:
             h_min = atoms_verbose.count('H')
