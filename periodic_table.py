@@ -1,6 +1,6 @@
 # {element : monoisotopic mass (nominal or exact)}
 
-pt = {
+pt_default = {
     'H':1,
     'C':12,
     'N':14,
@@ -12,7 +12,7 @@ pt = {
     'Br':79
     }
 
-pt_exact = {
+pt_exact_default = {
     'H':1.007825,
     'C':12.000000,
     'N':14.003074,

@@ -1,5 +1,5 @@
+from periodic_table import pt_default, pt_exact_default
 from bs4 import BeautifulSoup
-from periodic_table import pt, pt_exact
 import numpy as np
 import requests
 import argparse
@@ -299,6 +299,9 @@ def blackjack_alg(inp):
     parser.add_argument('-nist', action="store_true", help='NIST keywprd - for each found structure, look up on NIST if there is any matching mass spectra.', default=False)
 
     ARGS = parser.parse_args(inp[1:])
+
+    pt = pt_default.copy()
+    pt_exact = pt_exact_default.copy()
 
     try:
         if ARGS.hint:
