@@ -1,3 +1,6 @@
+# This code could be prettier, I know. Also, brute force would call for C/C++.
+# I was young and foolish, may you forgive me.
+
 from periodic_table import pt_default, pt_exact_default
 from bs4 import BeautifulSoup
 import numpy as np
