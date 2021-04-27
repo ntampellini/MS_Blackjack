@@ -5,7 +5,7 @@ if __name__ == "__main__":
 
     st.title('MS Blackjack')
     st.write('## Mass Fragments Brute Force Finder')
-    st.write('### Nicolò Tampellini - Alessandro Brusa')
+    st.write('### Nicolò Tampellini - Alessandro Brusa - 1 Nov 2020')
 
     input_string = str(st.number_input('Molecular Peak Mass',value=56))
 
